@@ -1,135 +1,205 @@
-Section 0: Adjust your dataset
+Pokémon Project Database
+Overview
 
+This project analyzes the usage of the top 100 Pokémon on the Pokémon Showdown platform during December 2023. Data was sourced from the Smogon Statistics page, a trusted resource for competitive Pokémon battling. The database design focuses on providing meaningful insights for competitive teambuilding, leveraging this data to identify trends in moves, abilities, items, spreads, teammates, and counters.
+Adjustments to the Dataset
 
-The "Pokémon_Project" database underwent through some modifications, primarily involving the removal of the "check_or_counter" attribute in the "checks_and_counters" table due to its contribution to transitive dependencies. This change was needed to maintain efficiency for the database. Additionally, the Pokémon dataset was refined to focus on the top one hundred used Pokémon, each with an additional attribute about their typing. The "Avg.weight" attribute was excluded because they all have the same number. Every category with the “other" attribute were removed because the ambiguity would not help answer meaningful questions regarding teambuilding. These changes contribute to a more efficient and meaningful representation of Pokémon-related data in the "Pokémon_Project" database.
+The dataset was refined to improve efficiency and relevance:
 
-Section 1: Design your database
+    Removed the "check_or_counter" attribute from the checks_and_counters table to eliminate transitive dependencies.
+    Limited the dataset to the top 100 most-used Pokémon and added typing attributes.
+    Excluded the "Avg.weight" attribute due to uniformity across entries.
+    Removed ambiguous "other" categories to ensure meaningful analysis.
 
-![Picture2](https://github.com/user-attachments/assets/4da00610-b9f5-4d22-843d-a199caf74faa)
+These modifications streamline the database for efficient querying and analysis.
+Database Design
+Schema Overview
 
+![Picture2](https://github.com/user-attachments/assets/77bb75f3-4fa2-4b65-ab54-31e459fb4dd1)
 
-This schema is about Pokémon usage on the online forum Pokémon Showdown during December 2023, the primary table revolves around individual Pokémon, serving as the focal point for various attributes. The "pokémon_attributes" table contains essential information about each Pokémon, such as its typing and usage among players. To accommodate the various builds that each Pokémon can use, additional tables employ linker tables. For instance, the "pokémon_items," “pokémon _moves,” pokémon _abilities,” and "pokémon_spreads" tables capture different items, moves, abilities, and spreads associated with a particular Pokémon, as documented by the Smogon community. Two other tables, namely "checks_and_counters," and "teammates" involve multiple Pokémon that can either be paired with the selected one or potentially counter it. This comprehensive schema provides a structured representation of key Pokémon-related data for analysis of what was most used for team building in Pokémon smogon at the time.
 
-Pokémon
- 
-This table has the attributes " pokémon_id" and " pokémon_name," with " pokémon_id" serving as the primary key. This dependency diagram is a one-to-one relationship where " pokémon_id" determines the attribute " pokémon_name." The "pokémon_id" will be the main attribute that will help connect many other attributes to the different pokémon in the database.
+The database schema revolves around the pokémon table, which connects to several related tables via linker tables to capture diverse attributes and relationships. This structure provides a comprehensive view of Pokémon usage, teambuilding strategies, and competitive dynamics.
+Table Descriptions
+1. Pokémon
 
+    Attributes: pokémon_id (Primary Key), pokémon_name
+    Core table representing individual Pokémon, connecting all related attributes and statistics.
 
-![Picture3](https://github.com/user-attachments/assets/d9bf4260-b0f0-4ae6-a8b6-80fa57920cf2)
+   ![Picture3](https://github.com/user-attachments/assets/949f225f-6c77-4006-84ff-695bf039bf0c)
 
 
-Pokémon_attributes
- 
-This table comprises of the attributes "pokémon _name," "typing_one," "typing_two," "raw_count," and "viability." The primary key, " pokémon _name," uniquely determines the Pokémon's typing, how frequent it was used in December 2023 ("raw_count") and overall performance via a viability score (0-100). For Pokémon with a single type, "typing_two" will be null. The "raw_count" represents usage frequency, and the "viability" score gauges overall effectiveness in ranked matches, helping players decided how well a certain pokémon could do when using it on a team.
+3. Pokémon Attributes
 
+    Attributes: pokémon_name (Primary Key), typing_one, typing_two, raw_count, viability
+    Captures Pokémon typing, usage frequency, and viability scores. Null values in typing_two indicate single-type Pokémon.
 
-![Picture4](https://github.com/user-attachments/assets/faacf719-d460-4cdf-a597-884495b92b52)
+   
+![Picture4](https://github.com/user-attachments/assets/0b612092-b9c6-4eb5-9d7c-ddc2c6b9096f)
 
-Pokémon_spread
+5. Pokémon Spreads
 
-From left to right (spread_id, nature, hp, attack, defense, special_attack, special_defense, speed, percent_usage).
-This table incorporates attributes like "spread_id," "nature," and individual stat values, with "spread_id" designated as the primary key owing to the diverse spreads associated with various Pokémon. Although not a primary key, "nature" significantly influences stat builds. Natures determine specific increases and decreases, shaping the total stat sum, capped at 510 (508 when summed). Some natures are neutral, exerting no effect on stats. The "percent_usage" attribute reflects the prevalence of specific spreads, offering info into most common strategies in the Smogon community. 
+    Attributes: spread_id (Primary Key), nature, hp, attack, defense, special_attack, special_defense, speed, percent_usage
+    Details stat builds and common spreads for each Pokémon, including natures and stat allocations.
 
+   
+![Picture5](https://github.com/user-attachments/assets/0d7829e7-111f-489d-a0a5-7fa2dac74707)
 
-![Picture5](https://github.com/user-attachments/assets/c832d44d-605c-4952-9f35-a89f5e6a6829)
+7. Pokémon Moves
 
+    Attributes: move_id (Primary Key), move, percent_usage
+    Highlights frequently used moves and their usage percentages in battles.
 
-Pokémon_spread_link
- 
-This table acts as a linker, connecting "pokémon _id" with "spread_id," specifically designed to capture the diverse spreads used by individual Pokémon in December 2023 on Smogon. Since each Pokémon can have different spreads, this table helps organizes the relationships between them, offering a concise yet comprehensive overview of what was used by players during that period. This will help for teambuilding by finding out what spread was most used, and if there are any other spreads that have been recorded.
+   
+![Picture9](https://github.com/user-attachments/assets/c1eb1550-bc78-428d-ab70-fc159c49043f)
 
-![Picture6](https://github.com/user-attachments/assets/8b3c3d7f-48bd-4d75-8a07-a06ab33f0c9d)
+9. Pokémon Abilities
 
+    Attributes: ability_id (Primary Key), ability, percent_usage
+    Tracks the most commonly assigned abilities for Pokémon, reflecting competitive trends.
 
-Pokémon_checks_and_counters
- 
-This table is centered around the attributes "check_and_counter_id" (primary key), "opposing_pokémon," "percent_usage," "Koed," and "switched_out." These data points reveal the frequency and effectiveness of opposing pokémon against the main one. "Koed" is how often the opposing pokémon defeats the main one, "switched_out" indicates strategic entries for countering, and "percent_usage" shows how frequently the opposing pokémon is used against the main one. This concise dataset offers insights into the strategic dynamics of pokémon battles. 
+   ![Picture13](https://github.com/user-attachments/assets/3ecc20bd-8dcf-472a-b036-dc3e382ff2f3)
 
 
-![Picture7](https://github.com/user-attachments/assets/3e1f8dcf-7493-48d4-b541-c0e10dba323e)
+11. Pokémon Items
 
-Pokémon_checks_and_counters_link
- 
-This table acts as a linker, connecting "pokémon _id" with " check_and_counter_id " specifically designed to capture the diverse opponents for a given individual Pokémon in December 2023 on Smogon. In competitive Pokémon, each Pokémon faces numerous adversaries, but only a select few are optimal choices for countering them effectively. This linker table helps connect between the most frequently used opponents and the main Pokémon in play. Its purpose is to provide valuable insights for team building, aiding players in identifying the most likely opponents their chosen Pokémon will encounter. 
+    Attributes: item_id (Primary Key), item, percent_usage
+    Lists held items used in battles, with associated usage percentages.
 
-![Picture8](https://github.com/user-attachments/assets/90a2fd1c-de02-478b-9bdd-7ecdc8a9af73)
+    ![Picture15](https://github.com/user-attachments/assets/cc481ec0-e916-44e2-9f76-2151ae23858f)
 
 
-Pokémon_moves
- 
-This table includes the attributes "move_id," "move," and "percent_usage," with "move_id" serving as the primary key. In the context of Pokémon battling, each Pokémon can potentially learn a variety of moves but is limited to using four in battles. This dataset provides valuable insights about the move’s players in Smogon would assign their pokémon. There are so many combinations of moves to give a pokémon, but only a handful will be useful in battle, whether the pokémon has the advantage or disadvantage in typing. This info helps in understanding the diverse strategies used by players in optimizing their Pokémon's move sets for battles.
+13. Pokémon Checks and Counters
 
+    Attributes: check_and_counter_id (Primary Key), opposing_pokémon, percent_usage, Koed, switched_out
+    Analyzes opposing Pokémon performance against the main Pokémon, detailing KO rates and strategic switches.
 
-![Picture9](https://github.com/user-attachments/assets/b06469cb-91ef-4d94-9ed3-0f37066ef319)
+    
+![Picture7](https://github.com/user-attachments/assets/aed7b8d4-47b8-4429-8d2e-1ce8544d624c)
 
+15. Pokémon Teammates
 
-Pokémon_moves_link
- 
-This table acts as a linker, connecting "pokémon _id" with "moves_id," specifically designed to capture the diverse moves given to an individual Pokémon in December 2023 on Smogon. Since each Pokémon can have up to four different moves, this table helps organizes the relationships between them, offering a concise yet comprehensive overview of what was used by players during that period. This will help for teambuilding by finding out what move was most used, and if there are any other moves that have been recorded.
+    Attributes: teammate_id (Primary Key), teammate, percent_usage
+    Highlights common teammate combinations to identify synergistic team-building strategies.
 
+    ![Picture11](https://github.com/user-attachments/assets/0667b0f2-874c-4019-97b5-128a6d993ee1)
 
-![Picture10](https://github.com/user-attachments/assets/50d3ab82-d809-42bf-87a5-84631225de02)
 
+Link Tables
 
-Pokémon_teammates
- 
-This table includes the attributes "teammate_id," "teammate," and "percent_usage," with "teammate_id" as the primary key. It plays a crucial role in showing the possible pairings with the main Pokémon of interest. In a full Pokémon team of 6, diversity is essential to cover weaknesses and potential opponents in battling. The data in this table highlights which Pokémon are commonly paired with the main Pokémon, providing insights into strategic team building. Understanding these pairings not only helps in creating one's team but also helps anticipate common matchups against other players. This information is valuable for constructing teams that synergize well and can adapt to potential threats in competitive Pokémon battles.
+To capture the many-to-many relationships between Pokémon and their attributes, the schema uses link tables:
 
+    Pokémon Spread Link: Connects pokémon_id to spread_id.
 
+![Picture6](https://github.com/user-attachments/assets/fb1db52a-7c89-4bee-ba7e-175d990934cc)
 
-![Picture11](https://github.com/user-attachments/assets/544b171f-2fc6-48b8-8672-a8dffc5859c1)
+    Pokémon Moves Link: Connects pokémon_id to move_id.
 
+![Picture10](https://github.com/user-attachments/assets/12d58b01-8c45-47f7-9e5a-89e9c79d1c44)
 
-Pokémon_teammates_link
- 
-This table acts as a linker, connecting "pokémon _id" with "teammates_id," specifically designed to capture the different ability assigned to an individual Pokémon in December 2023 on Smogon. Many Pokémon will be paired with a variety of other to try to cover all weakness in battle. A full pokemon team will have six pokemon, so there will be a lot of combinations. This table helps organizes the relationships between the Pokémon and the most common teammates, offering a concise yet comprehensive overview of what was used by players during that period. This will help for teambuilding by finding out what teammate was most used, and if there are any other teammates that have been used.
+    Pokémon Abilities Link: Connects pokémon_id to ability_id.
 
+![Picture14](https://github.com/user-attachments/assets/76b0e13c-557b-479d-884c-d24050b6fed9)
 
-![Picture12](https://github.com/user-attachments/assets/ce83cc9d-3344-4a35-bf58-e5d3776f90ee)
+    Pokémon Items Link: Connects pokémon_id to item_id.
 
+![Picture16](https://github.com/user-attachments/assets/fce32639-7e5f-4231-9798-23fe8f1b8972)
+    
+    Pokémon Checks and Counters Link: Connects pokémon_id to check_and_counter_id.
 
-Pokémon_abilities
- 
-This table includes "ability_id," "ability," and "percent_usage," with the primary key "ability_id" uniquely identifying each ability and its corresponding usage percentage. The dependency diagram establishes crucial links between abilities and their usage, serving as an important connection to the Pokémon Abilities Linker table. This linkage shows common abilities assigned to specific Pokémon, offering insights into ability usage trends within the Smogon community. This will help show the most common ability used for certain Pokémon, along with identifying other Pokémon-ability combinations used. It is noteworthy that not every Pokémon possesses more than one ability, resulting in some instances with a guaranteed percent usage of one hundred.
+![Picture8](https://github.com/user-attachments/assets/b0aea378-6991-4a1e-b52f-b12766b3f096)
 
+    Pokémon Teammates Link: Connects pokémon_id to teammate_id.
 
-![Picture13](https://github.com/user-attachments/assets/345a27f2-1409-4b1d-8c62-f5d82e6ff7fa)
+![Picture12](https://github.com/user-attachments/assets/76d0f5d3-d8fb-4a50-bdb9-0ab4c254afa9)
 
+    
 
-Pokémon_abilities_link
- 
-This table acts as a linker, connecting "pokémon _id" with "ability_id," specifically designed to capture the different ability assigned to an individual Pokémon in December 2023 on Smogon. Many Pokémon can have more than one ability, while some only have one. This table helps organizes the relationships between the Pokémon and its most used ability, offering a concise yet comprehensive overview of what was used by players during that period. This will help for teambuilding by finding out what ability was most used, and if there are any other ability that have been used.
+These link tables ensure efficient organization and retrieval of data, supporting insights into competitive Pokémon battles.
 
+Purpose and Insights
 
-![Picture14](https://github.com/user-attachments/assets/342e7cbe-a7b0-4e76-b790-0167c8052be4)
+This database provides a structured framework for analyzing trends in Pokémon usage, teambuilding strategies, and counterplay dynamics. By identifying common spreads, moves, teammates, and counters, it serves as a valuable tool for players and researchers interested in competitive Pokémon.
+Data Source
 
+The data for this project was sourced from the Smogon Statistics page, which compiles usage statistics from Pokémon Showdown battles. This ensures that the dataset reflects real-world competitive battling trends and strategies.
+Including the original source of your data is important for transparency and credibility. Here's an updated version of the README that incorporates this information:
+Pokémon Project Database
+Overview
 
-Pokémon_items
- 
-This table features "item_id," "item," and "percent_usage," where the primary key "item_id" uniquely identifies each item and its associated usage percentage. The dependency diagram establishes links between items and their usage, which is important for connecting to the Pokémon Item Linker table. This linkage shows the common items players equip Pokémon with, providing insights into item usage in the Smogon community. This can help show what item was favourited for a certain Pokémon, and if any other Pokémon-item combination was used.
+This project analyzes the usage of the top 100 Pokémon on the Pokémon Showdown platform during December 2023. Data was sourced from the Smogon Statistics page, a trusted resource for competitive Pokémon battling. The database design focuses on providing meaningful insights for competitive teambuilding, leveraging this data to identify trends in moves, abilities, items, spreads, teammates, and counters.
+Adjustments to the Dataset
 
+The dataset was refined to improve efficiency and relevance:
 
-![Picture15](https://github.com/user-attachments/assets/ab5cba2b-afcb-413f-be1c-13097cf0501a)
+    Removed the "check_or_counter" attribute from the checks_and_counters table to eliminate transitive dependencies.
+    Limited the dataset to the top 100 most-used Pokémon and added typing attributes.
+    Excluded the "Avg.weight" attribute due to uniformity across entries.
+    Removed ambiguous "other" categories to ensure meaningful analysis.
 
+These modifications streamline the database for efficient querying and analysis.
+Database Design
 
-Pokémon_items_link
- 
-This table acts as a linker, connecting "pokémon _id" with "item_id," specifically designed to capture the different held item given to an individual Pokémon in December 2023 on Smogon. Since each Pokémon can hold different items, this table helps organizes the relationships between them, offering a concise yet comprehensive overview of what was used by players during that period. This will help for teambuilding by finding out what item was most used, and if there are any other items that have been recorded.
+The database schema revolves around the pokémon table, which connects to several related tables via linker tables to capture diverse attributes and relationships. This structure provides a comprehensive view of Pokémon usage, teambuilding strategies, and competitive dynamics.
+Table Descriptions
+1. Pokémon
 
+    Attributes: pokémon_id (Primary Key), pokémon_name
+    Core table representing individual Pokémon, connecting all related attributes and statistics.
 
-![Picture16](https://github.com/user-attachments/assets/3d5547c2-cd3e-44ea-95d7-588619376dc8)
+2. Pokémon Attributes
 
+    Attributes: pokémon_name (Primary Key), typing_one, typing_two, raw_count, viability
+    Captures Pokémon typing, usage frequency, and viability scores. Null values in typing_two indicate single-type Pokémon.
 
+3. Pokémon Spreads
 
-Business rules: 
+    Attributes: spread_id (Primary Key), nature, hp, attack, defense, special_attack, special_defense, speed, percent_usage
+    Details stat builds and common spreads for each Pokémon, including natures and stat allocations.
 
-The Pokémon table in the Pokémon database implements a vital business rule that each Pokémon entry must be unique, ensuring that no two Pokémon share the same name within the database. This constraint is enforced by designating the `pokémon_name` column as a unique constraint. By enforcing uniqueness on Pokémon names, the database maintains data integrity and consistency, which accurately represents individual Pokémon entities without redundancy.
+4. Pokémon Moves
 
-In the Pokémon database, each Pokémon in the database must have at least one typing to represent its elemental attributes. Therefore, both `typing_one` and `typing_two` columns in the `pokémon_attributes` table are set as `NOT NULL`, ensuring every Pokémon entry follows this requirement for data integrity and accuracy.
+    Attributes: move_id (Primary Key), move, percent_usage
+    Highlights frequently used moves and their usage percentages in battles.
 
-In the Pokémon database, each Pokémon can be assigned a maximum of two typings to represent their elemental attributes. If a Pokémon possesses only one typing, the second typing will be represented by NULL in the database. This business rule is implemented within the `pokémon_attributes` table, where two columns (`typing_one` and `typing_two`) are provided to store the typings associated with each Pokémon. By permitting NULL values in the `typing_two` column, the database accommodates Pokémon with singular typings while ensuring consistency in the representation of Pokémon attributes.
+5. Pokémon Abilities
 
+    Attributes: ability_id (Primary Key), ability, percent_usage
+    Tracks the most commonly assigned abilities for Pokémon, reflecting competitive trends.
 
-Data retrieved from:
+6. Pokémon Items
+
+    Attributes: item_id (Primary Key), item, percent_usage
+    Lists held items used in battles, with associated usage percentages.
+
+7. Pokémon Checks and Counters
+
+    Attributes: check_and_counter_id (Primary Key), opposing_pokémon, percent_usage, Koed, switched_out
+    Analyzes opposing Pokémon performance against the main Pokémon, detailing KO rates and strategic switches.
+
+8. Pokémon Teammates
+
+    Attributes: teammate_id (Primary Key), teammate, percent_usage
+    Highlights common teammate combinations to identify synergistic team-building strategies.
+
+Link Tables
+
+To capture the many-to-many relationships between Pokémon and their attributes, the schema uses link tables:
+
+    Pokémon Spread Link: Connects pokémon_id to spread_id.
+    Pokémon Moves Link: Connects pokémon_id to move_id.
+    Pokémon Abilities Link: Connects pokémon_id to ability_id.
+    Pokémon Items Link: Connects pokémon_id to item_id.
+    Pokémon Checks and Counters Link: Connects pokémon_id to check_and_counter_id.
+    Pokémon Teammates Link: Connects pokémon_id to teammate_id.
+
+These link tables ensure efficient organization and retrieval of data, supporting insights into competitive Pokémon battles.
+
+Purpose and Insights
+
+This database provides a structured framework for analyzing trends in Pokémon usage, teambuilding strategies, and counterplay dynamics. By identifying common spreads, moves, teammates, and counters, it serves as a valuable tool for players and researchers interested in competitive Pokémon.
+Data Source
+
+The data for this project was sourced from the Smogon Statistics page, which compiles usage statistics from Pokémon Showdown battles. This ensures that the dataset reflects real-world competitive battling trends and strategies.
 
 Smogon University - Competitive Pokémon Community. "Moveset Statistics - Generation 9 OU (December 2023 DLC2)." Smogon, 1 Jan. 2024, https://www.smogon.com/stats/2023-12-DLC2/moveset/gen9ou-0.txt.
+
