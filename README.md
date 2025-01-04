@@ -128,3 +128,8 @@ The Pokémon table in the Pokémon database implements a vital business rule tha
 In the Pokémon database, each Pokémon in the database must have at least one typing to represent its elemental attributes. Therefore, both `typing_one` and `typing_two` columns in the `pokémon_attributes` table are set as `NOT NULL`, ensuring every Pokémon entry follows this requirement for data integrity and accuracy.
 
 In the Pokémon database, each Pokémon can be assigned a maximum of two typings to represent their elemental attributes. If a Pokémon possesses only one typing, the second typing will be represented by NULL in the database. This business rule is implemented within the `pokémon_attributes` table, where two columns (`typing_one` and `typing_two`) are provided to store the typings associated with each Pokémon. By permitting NULL values in the `typing_two` column, the database accommodates Pokémon with singular typings while ensuring consistency in the representation of Pokémon attributes.
+
+
+Data retrieved from:
+
+Smogon University - Competitive Pokémon Community. "Moveset Statistics - Generation 9 OU (December 2023 DLC2)." Smogon, 1 Jan. 2024, https://www.smogon.com/stats/2023-12-DLC2/moveset/gen9ou-0.txt.
