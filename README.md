@@ -1,11 +1,11 @@
-Pokémon Project Database
+### Pokémon Project Database
 
 Overview
 
 This project analyzes the usage of the top 100 Pokémon on the Pokémon Showdown platform during December 2023. The data was sourced from the Smogon Statistics page, a trusted resource for competitive Pokémon battling. The primary goal of this database is to provide insights into competitive teambuilding by identifying trends in Pokémon moves, abilities, items, spreads, teammates, and counters.
 
 
-Adjustments to the Dataset
+### Adjustments to the Dataset
 
 To optimize the dataset for analysis, the following adjustments were made:
 
@@ -16,8 +16,25 @@ To optimize the dataset for analysis, the following adjustments were made:
 
 These changes streamline the dataset for more efficient querying and clearer insights.
 
+### Why are these data interesting?
 
-Database Design
+The dataset is interesting for two main reasons. Firstly, as a Pokémon enthusiast who regularly battles with my best friend on Pokémon Showdown, the data is personally engaging. Working with this dataset allows me to apply my passion for Pokémon to my analysis. Secondly, analyzing and structuring this data will help improve team-building strategies. Understanding the common strengths and weaknesses of Pokémon, as well as their frequently used moves and setups, will assist in anticipating potential battle outcomes. The Generation 9 OU format is particularly appealing as it represents the latest competitive format, which I enjoy playing the most.
+
+### What kinds of information would you like to generate from the database you will build?
+
+I aim to identify the most commonly used Pokémon in December 2023 and the builds associated with them. Since the final DLC for Generation 9 was released in December, I am interested in analyzing how the addition of new and returning Pokémon influenced the usage trends. By organizing the data, I hope to streamline my team-building process by identifying the most commonly used Pokémon and their setups. For instance, if Great Tusk is frequently used, I can expect to encounter it in future battles. Additionally, I plan to compare this dataset with future ones to enhance my team-building approach over time.
+
+### Description of the Dataset
+
+The dataset contains over 300 Pokémon that have been used on Pokémon Showdown, an online platform where players create teams and battle others in competitive formats. The data is specifically from Generation 9 OU, which is one of the most popular and up-to-date competitive formats. Each Pokémon entry includes data on usage frequency, the most common items, abilities, moves, EV spreads, teammates, and checks/counters.
+
+For simplicity, the dataset will focus on the top 100 Pokémon from the Generation 9 OU format. The dataset includes 13 tables, with six of those tables linking to the main Pokémon table. These linked tables contain information about the Pokémon's items, abilities, moves, EV spreads, and counters. Each table includes attributes such as ID, percentage usage, and the name of the item, ability, move, or teammate. The tables are interconnected by linking the Pokémon ID in the main Pokémon table to the corresponding information in the linked tables, showing the most common configurations for each Pokémon.
+
+
+
+
+
+### Database Design
 
 Schema Overview
 
@@ -25,7 +42,6 @@ Schema Overview
 
 
 The database schema centers around the pokémon table, which links to various other tables through linker tables. This design captures the many-to-many relationships between Pokémon and their attributes, providing a comprehensive view of Pokémon usage, competitive teambuilding, and counterplay dynamics.
-
 
 
 Table Descriptions
@@ -150,109 +166,121 @@ Pokémon Teammates Link
 This section outlines the structure and function of each linker table. The linker tables enable flexible relationships and ensure that Pokémon can be efficiently connected to various attributes, such as their spreads, moves, abilities, items, checks, counters, and teammates.
 
 
-Example Queries
+### Example Queries
 
 Here are some example queries for interacting with the Pokémon database:
 
 Query 1: Average Percentage Usage of Specific Natures
 
-USE pokémon_project;
-SELECT nature, AVG(percent_usage) AS "avg_percent_usage"
-FROM pokémon_spread
-WHERE nature = 'Jolly'
-OR nature = 'Adamant'
-OR nature = 'Timid'
-OR nature = 'Modest'
-GROUP BY nature
-ORDER BY avg_percent_usage DESC;
+    USE pokémon_project;
+    SELECT nature, AVG(percent_usage) AS "avg_percent_usage"
+    FROM pokémon_spread
+    WHERE nature = 'Jolly'
+    OR nature = 'Adamant'
+    OR nature = 'Timid'
+    OR nature = 'Modest'
+    GROUP BY nature
+    ORDER BY avg_percent_usage DESC;
 
 Explanation:
 This query calculates the average percentage of the natures Timid, Jolly, Adamant, and Modest among Pokémon. Natures influence a Pokémon's stats by either raising or lowering certain attributes, and these specific natures are often preferred for attacking styles. The query provides insights into the common stat distributions among Pokémon based on the natures.
 
-Returned Table:
-nature	avg_percent_usage
-Timid	15.25602
-Jolly	14.36083
-Adamant	10.51673
-Modest	7.481781
+    Returned Table:
+    nature	avg_percent_usage
+    Timid	15.25602
+    Jolly	14.36083
+    Adamant	10.51673
+    Modest	7.481781
 
 Query 2: Pokémon and Their Abilities
 
-USE pokémon_project;
-SELECT p.pokémon_id, p.pokémon_name, a.ability, a.percent_usage
-FROM pokémon p
-INNER JOIN pokémon_abilities_link pal ON(p.pokémon_id = pal.pokémon_id)
-INNER JOIN abilities a ON(pal.ability_id = a.ability_id)
-ORDER BY p.pokémon_id ASC, a.percent_usage DESC;
+    USE pokémon_project;
+    SELECT p.pokémon_id, p.pokémon_name, a.ability, a.percent_usage
+    FROM pokémon p
+    INNER JOIN pokémon_abilities_link pal ON(p.pokémon_id = pal.pokémon_id)
+    INNER JOIN abilities a ON(pal.ability_id = a.ability_id)
+    ORDER BY p.pokémon_id ASC, a.percent_usage DESC;
 
 Explanation:
 This query retrieves the Pokémon along with their associated abilities and the percentage of usage for each ability. The query joins the Pokémon table, the Pokémon Abilities Link table, and the Abilities table to provide an organized list of abilities for each Pokémon.
 
 Returned Table (First 20 Rows for Simplicity):
-pokémon_id	pokémon_name	ability	percent_usage
-1	Great Tusk	Protosynthesis	100
-2	Kingambit	Supreme Overlord	97.19
-2	Kingambit	Defiant	2.62
-3	Gholdengo	Good as Gold	100
-4	Iron Boulder	Quark Drive	100
-5	Gouging Fire	Protosynthesis	100
-6	Raging Bolt	Protosynthesis	100
-7	Archaludon	Stamina	96.99
-7	Archaludon	Sturdy	2.55
-8	Deoxys-Speed	Pressure	100
-9	Gliscor	Poison Heal	99.22
-9	Gliscor	Hyper Cutter	0.78
-10	Serperior	Contrary	99.1
-10	Serperior	Overgrow	0.9
-11	Roaring Moon	Protosynthesis	100
-12	Enamorus	Contrary	91.79
-13	Darkrai	Bad Dreams	100
-14	Hatterene	Magic Bounce	99.41
-15	Iron Valiant	Quark Drive	100
+
+    pokémon_id	pokémon_name	ability	        percent_usage
+    1	        Great Tusk       Protosynthesis	    100
+    2	        Kingambit        Supreme Overlord   97.19
+    2	        Kingambit        Defiant	    2.62
+    3	        Gholdengo        Good as Gold	    100
+    4	        Iron Boulder     Quark Drive	    100
+    5	        Gouging Fire     Protosynthesis	    100
+    6	        Raging Bolt	 Protosynthesis	    100
+    7	        Archaludon	 Stamina	    96.99
+    7	        Archaludon	 Sturdy	            2.55
+    8	        Deoxys-Speed	 Pressure	    100
+    9	        Gliscor	         Poison Heal	    99.22
+    9	        Gliscor	         Hyper Cutter	    0.78
+    10	        Serperior	 Contrary	    99.1
+    10	        Serperior	 Overgrow	    0.9
+    11	        Roaring Moon	 Protosynthesis	    100
+    12	        Enamorus	 Contrary	    91.79
+    13	        Darkrai	         Bad Dreams	    100
+    14	        Hatterene	 Magic Bounce	    99.41
+    15	        Iron Valiant	 Quark Drive	    100
 
 Query 3: Number of Stat Spreads for Each Pokémon
 
-SELECT p.pokémon_id, p.pokémon_name, COUNT(ps.spread_id) AS "number_of_spreads"
-FROM pokémon p
-INNER JOIN pokémon_spread_link psl ON(p.pokémon_id = psl.pokémon_id)
-INNER JOIN pokémon_spread ps ON(psl.spread_id = ps.spread_id)
-GROUP BY p.pokémon_id, p.pokémon_name
-ORDER BY p.pokémon_id ASC;
+    SELECT p.pokémon_id, p.pokémon_name, COUNT(ps.spread_id) AS "number_of_spreads"
+    FROM pokémon p
+    INNER JOIN pokémon_spread_link psl ON(p.pokémon_id = psl.pokémon_id)
+    INNER JOIN pokémon_spread ps ON(psl.spread_id = ps.spread_id)
+    GROUP BY p.pokémon_id, p.pokémon_name
+    ORDER BY p.pokémon_id ASC;
 
 Explanation:
 This query counts the number of stat spreads available for each Pokémon. Stat spreads allow players to customize the distribution of stats to enhance their Pokémon's strengths. By knowing the number of spreads available, players can strategize better when building teams or battling.
 
 Returned Table (First 20 Rows for Simplicity):
-pokémon_id	pokémon_name	number_of_spreads
-1	Great Tusk	6
-2	Kingambit	6
-3	Gholdengo	6
-4	Iron Boulder	6
-5	Gouging Fire	6
-6	Raging Bolt	6
-7	Archaludon	6
-8	Deoxys-Speed	6
-9	Gliscor	6
-10	Serperior	6
-11	Roaring Moon	6
-12	Enamorus	6
-13	Darkrai	6
-14	Hatterene	5
-15	Iron Valiant	6
-16	Cinderace	6
-17	Dragonite	6
-18	Dragapult	6
-19	Torkoal	6
-20	Volcarona	6
+
+    pokémon_id	pokémon_name	number_of_spreads
+    1	        Great Tusk	         6
+    2	        Kingambit	         6
+    3	        Gholdengo	         6
+    4	        Iron Boulder	         6
+    5	        Gouging Fire	         6
+    6	        Raging Bolt	         6
+    7	        Archaludon	         6
+    8	        Deoxys-Speed	         6
+    9	        Gliscor	                 6
+    10	        Serperior	         6
+    11	        Roaring Moon	         6
+    12	        Enamorus	         6
+    13	        Darkrai	                 6
+    14	        Hatterene	         5
+    15	        Iron Valiant	         6
+    16	        Cinderace	         6
+    17	        Dragonite	         6
+    18	        Dragapult	         6
+    19	        Torkoal	                 6
+    20	        Volcarona	         6
 
 
+### Analysis/Goals
 
+Competitive Trends: By analyzing the types, moves, abilities, and common teammates of Pokémon in the dataset, the goal is to identify which Pokémon are trending in competitive play and understand the factors behind their popularity. This can help in recognizing patterns in the meta and anticipating shifts in Pokémon viability.
 
+Teambuilding Insights: The analysis will provide insights into Pokémon synergy, highlighting how specific Pokémon complement each other in battle and the roles they play in effective team compositions. Additionally, understanding the most common counters can enhance team strategy by identifying weaknesses to avoid.
 
+Meta Analysis: The dataset offers a snapshot of the competitive meta in Generation 9 OU, allowing players to analyze the most common and effective strategies. This analysis will be valuable for players aiming to stay ahead of the curve in competitive tournaments and matches by understanding the current meta and predicting future trends.
 
+### Future Work
 
+Monthly Updates: To keep the dataset relevant and accurate, it will be updated monthly to reflect the latest data on Pokémon usage and trends in competitive play. This ensures the analysis remains current and can track the evolution of the competitive meta.
 
-The data for this project was sourced from the Smogon Statistics page, which compiles usage statistics from Pokémon Showdown battles. This ensures that the dataset reflects real-world competitive battling trends and strategies.
+Streamlining Data Configuration: Future improvements will focus on making it easier to configure and manipulate the Excel file, possibly automating data entry and organizing the dataset in a more user-friendly format. This will facilitate faster analysis and reduce the potential for errors during data handling.
 
-Smogon University - Competitive Pokémon Community. "Moveset Statistics - Generation 9 OU (December 2023 DLC2)." Smogon, 1 Jan. 2024, https://www.smogon.com/stats/2023-12-DLC2/moveset/gen9ou-0.txt.
+### Data Sources:
 
+Smogon University. "Moveset Statistics - Generation 9 OU (December 2023 DLC2)." Smogon, 1 Jan. 2024, https://www.smogon.com/stats/2023-12-DLC2/moveset/gen9ou-0.txt.
+    Pokémon type data from Merrick, Joe. Serebii, https://www.serebii.net/.
+
+Data was extracted from the provided sources and formatted into tables in Excel, using only the top 100 Pokémon names.
