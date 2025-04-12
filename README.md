@@ -16,7 +16,7 @@ To optimize the dataset for analysis, the following adjustments were made:
 
 These changes streamline the dataset for more efficient querying and clearer insights.
 
-### Why are these data interesting?
+### Why is this data interesting?
 
 The dataset is interesting for two main reasons. Firstly, as a Pokémon enthusiast who regularly battles with my best friend on Pokémon Showdown, the data is personally engaging. Working with this dataset allows me to apply my passion for Pokémon to my analysis. Secondly, analyzing and structuring this data will help improve team-building strategies. Understanding the common strengths and weaknesses of Pokémon, as well as their frequently used moves and setups, will assist in anticipating potential battle outcomes. The Generation 9 OU format is particularly appealing as it represents the latest competitive format, which I enjoy playing the most.
 
